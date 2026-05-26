@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0f172a" />
+<title>Our Week</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%93%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --surface-2: #f4f4f5;
+    --border: #e4e4e7;
+    --border-strong: #d4d4d8;
+    --text: #18181b;
+    --text-muted: #71717a;
+    --text-subtle: #a1a1aa;
+    --accent: #18181b;
+    --accent-soft: #f4f4f5;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+    --radius: 10px;
+    --radius-sm: 6px;
+
+    /* Our List palette — used inside the List tab */
+    --paper:#f5efe4;
+    --paper-2:#ede4d3;
+    --ink:#1f1b16;
+    --ink-soft:#5b5246;
+    --rule:#d8cdb8;
+    --list-accent:#c2410c;
+    --accent-soft-2:#f0d5c2;
+    --done:#9a8f7d;
+    --list-shadow: 0 1px 0 rgba(31,27,22,.04), 0 8px 24px -12px rgba(31,27,22,.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #09090b;
+      --surface: #18181b;
+      --surface-2: #27272a;
+      --border: #27272a;
+      --border-strong: #3f3f46;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-subtle: #71717a;
+      --accent: #fafafa;
+      --accent-soft: #27272a;
+
+      --paper:#1a1714;
+      --paper-2:#221d18;
+      --ink:#efe8d9;
+      --ink-soft:#a99e89;
+      --rule:#3a3128;
+      --list-accent:#f4a261;
+      --accent-soft-2:#3a2a1f;
+      --done:#6b6354;
+      --list-shadow: 0 1px 0 rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .app {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: env(safe-area-inset-top) 16px calc(72px + env(safe-area-inset-bottom));
+  }
+
+  header.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0 12px;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sync-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text-subtle);
+    transition: background .2s ease;
+  }
+  .sync-dot.live { background: var(--success); }
+  .sync-dot.error { background: var(--danger); }
+
+  .header-right {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .user-chip {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 36px; height: 36px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+  .icon-btn svg { width: 18px; height: 18px; }
+
+  /* Tabs */
+  nav.tabs {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+  .tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 8px 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    border-radius: var(--radius-sm);
+    transition: color .15s ease, background .15s ease;
+  }
+  .tab svg { width: 22px; height: 22px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Cards / inputs */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  input[type="text"], input[type="time"], select {
+    flex: 1;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .15s ease;
+    min-width: 0;
+  }
+  input[type="time"] { flex: 0 0 auto; width: auto; }
+  input[type="text"]:focus, input[type="time"]:focus, select:focus {
+    border-color: var(--border-strong);
+  }
+  button.btn {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: opacity .15s ease;
+  }
+  button.btn:hover { opacity: 0.85; }
+  button.btn.ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  button.btn.ghost:hover { color: var(--text); background: var(--surface-2); }
+
+  /* Wishlist */
+  .wishlist {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .wishlist-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color .15s ease;
+  }
+  .wishlist-item.scheduled { opacity: 0.55; }
+  .wishlist-item .text { flex: 1; word-break: break-word; }
+  .wishlist-item .text.done { text-decoration: line-through; color: var(--text-muted); }
+  .wishlist-item .actions { display: flex; gap: 4px; opacity: 0; transition: opacity .15s ease; }
+  .wishlist-item:hover .actions, .wishlist-item:focus-within .actions { opacity: 1; }
+  @media (hover: none) { .wishlist-item .actions { opacity: 1; } }
+
+  .small-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-subtle);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .small-btn:hover { color: var(--text); background: var(--surface-2); }
+
+  .empty {
+    text-align: center;
+    color: var(--text-subtle);
+    padding: 40px 20px;
+    font-size: 14px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-subtle);
+    font-weight: 600;
+    margin: 24px 0 10px;
+  }
+  .section-label:first-of-type { margin-top: 4px; }
+
+  /* Week planner */
+  .week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+  .week-nav .week-label {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .week-nav-btns { display: flex; gap: 6px; }
+
+  .planner-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+  }
+
+  .day-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .day-block.today { border-color: var(--accent); }
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .day-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .day-date {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .day-items {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .day-items li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    padding: 4px 0;
+  }
+  .day-items li .text { flex: 1; }
+  .day-items li .text.done { text-decoration: line-through; color: var(--text-muted); }
+  .day-items li .time-chip {
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .day-items li .time-chip:hover { background: var(--border); color: var(--text); }
+  .day-items li .time-chip.empty { color: var(--text-subtle); font-style: italic; }
+  .day-items .small-btn { padding: 2px 6px; font-size: 12px; }
+  .day-add {
+    margin-top: 8px;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--text-subtle);
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .day-add:hover { color: var(--text); border-color: var(--border-strong); }
+
+  /* This Week (published) view */
+  .pub-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin: -4px 0 12px;
+  }
+  .pub-day {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .pub-day:last-child { border-bottom: none; }
+  .pub-day.today .pub-day-header { color: var(--accent); }
+  .pub-day-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .pub-day-name {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .pub-day-date {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .pub-day-items {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pub-day-items li {
+    font-size: 15px;
+    padding: 6px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .pub-day-items li .dot {
+    width: 6px; height: 6px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .pub-day-items li .pub-time {
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+    min-width: 64px;
+    flex-shrink: 0;
+    padding-top: 1px;
+    font-weight: 500;
+  }
+  .pub-day-items li.done .text { text-decoration: line-through; color: var(--text-muted); }
+  .pub-day-empty {
+    font-size: 14px;
+    color: var(--text-subtle);
+    font-style: italic;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  @media (min-width: 640px) {
+    .modal-backdrop { align-items: center; }
+  }
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  .modal h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .modal .day-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .modal .day-buttons button {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    text-align: left;
+  }
+  .modal .day-buttons button:hover { border-color: var(--border-strong); }
+  .modal .field-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+  .modal .field-row label {
+    font-size: 13px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .modal .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  /* Settings */
+  .settings-section { padding: 8px 0 16px; }
+  .settings-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .settings-section p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+  }
+  .status-msg {
+    font-size: 12px;
+    margin-top: 8px;
+    color: var(--text-muted);
+  }
+  .status-msg.ok { color: var(--success); }
+  .status-msg.err { color: var(--danger); }
+
+  /* ========================
+     "Our List" tab — paper theme inside the list view only
+     ======================== */
+  #view-list {
+    font-family: "Fraunces", Georgia, serif;
+    font-feature-settings: "ss01","ss02","liga";
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 22px 18px 16px;
+    margin-top: 4px;
+    background-image:
+      radial-gradient(1200px 600px at 10% -10%, rgba(194,65,12,.07), transparent 60%),
+      radial-gradient(900px 500px at 110% 110%, rgba(31,27,22,.05), transparent 60%);
+  }
+  #view-list .list-header {
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:16px;
+  }
+  #view-list .brand {
+    font-variation-settings:"opsz" 144, "SOFT" 30;
+    font-weight:500; font-size:clamp(34px, 6vw, 52px);
+    letter-spacing:-.02em; line-height:1;
+  }
+  #view-list .brand em { font-style:italic; color:var(--list-accent); font-weight:400; }
+  #view-list .sub {
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    text-transform:uppercase; letter-spacing:.18em; font-size:11px;
+    color:var(--ink-soft);
+  }
+  #view-list .rule { height:1px; background:var(--rule); margin:14px 0 18px; position:relative; }
+  #view-list .rule::after {
+    content:""; position:absolute; left:0; top:-3px; width:64px; height:7px;
+    background:var(--list-accent);
+  }
+  #view-list form.add {
+    background:var(--paper-2);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    padding:14px;
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:10px;
+    box-shadow:var(--list-shadow);
+  }
+  #view-list .row { display:grid; gap:10px; grid-template-columns: 1fr 110px 150px auto; }
+  @media (max-width:640px) {
+    #view-list .row { grid-template-columns: 1fr 1fr; }
+    #view-list .row .add-btn { grid-column:1/-1; }
+  }
+  #view-list .field {
+    display:flex; align-items:center; gap:8px;
+    background:var(--paper);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:10px 12px;
+  }
+  #view-list .field label {
+    font-family:"JetBrains Mono", monospace;
+    font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  #view-list .field input,
+  #view-list .field select,
+  #view-list .field textarea {
+    width:100%; border:0; background:transparent; color:var(--ink);
+    font:inherit; font-size:17px; outline:none;
+  }
+  #view-list textarea { resize:vertical; min-height:36px; font-family:inherit; }
+  #view-list .add-btn {
+    border:0; cursor:pointer;
+    background:var(--ink); color:var(--paper);
+    font-family:"JetBrains Mono", monospace; text-transform:uppercase;
+    letter-spacing:.16em; font-size:12px; font-weight:500;
+    padding:0 18px; border-radius:10px;
+    transition:transform .15s ease, background .2s ease;
+  }
+  #view-list .add-btn:hover { background:var(--list-accent); transform:translateY(-1px); }
+  #view-list .chips { display:flex; flex-wrap:wrap; gap:6px; margin:22px 0 10px; }
+  #view-list .chip {
+    font-family:"JetBrains Mono", monospace; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase;
+    padding:6px 10px; border-radius:999px;
+    border:1px solid var(--rule); background:transparent; color:var(--ink-soft);
+    cursor:pointer; transition:all .15s ease;
+  }
+  #view-list .chip:hover { color:var(--ink); border-color:var(--ink-soft); }
+  #view-list .chip.active { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  #view-list .chip .count { opacity:.6; margin-left:6px; }
+  #view-list .section-head {
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin:24px 4px 8px;
+  }
+  #view-list .section-head h2 {
+    font-size:14px; font-family:"JetBrains Mono", monospace;
+    text-transform:uppercase; letter-spacing:.2em; color:var(--ink-soft);
+    margin:0; font-weight:500;
+  }
+  #view-list ul.list { list-style:none; padding:0; margin:0; }
+  #view-list li.item {
+    display:grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items:start; gap:14px;
+    padding:16px 6px;
+    border-bottom:1px solid var(--rule);
+    position:relative;
+    animation: fade .3s ease both;
+  }
+  #view-list li.item:last-child { border-bottom:0; }
+  @keyframes fade { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  #view-list .check {
+    appearance:none; -webkit-appearance:none;
+    width:22px; height:22px; border:1.5px solid var(--ink-soft);
+    border-radius:50%; cursor:pointer; margin-top:4px;
+    position:relative; background:transparent;
+    transition: all .2s ease;
+  }
+  #view-list .check:hover { border-color:var(--list-accent); }
+  #view-list .check:checked { background:var(--list-accent); border-color:var(--list-accent); }
+  #view-list .check:checked::after {
+    content:""; position:absolute; left:6px; top:2px;
+    width:6px; height:11px; border:solid var(--paper);
+    border-width:0 2px 2px 0; transform:rotate(45deg);
+  }
+  #view-list .item-body { min-width:0; }
+  #view-list .item-title {
+    font-size:21px; line-height:1.25; letter-spacing:-.01em;
+    font-variation-settings:"opsz" 36;
+    word-wrap:break-word;
+  }
+  #view-list .item-meta {
+    display:flex; flex-wrap:wrap; gap:10px; margin-top:4px;
+    font-family:"JetBrains Mono", monospace; font-size:11px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  #view-list .item-meta .cat {
+    background:var(--accent-soft-2); color:var(--list-accent);
+    padding:2px 8px; border-radius:999px;
+  }
+  #view-list .item-note {
+    margin-top:6px; color:var(--ink-soft);
+    font-style:italic; font-size:15px; line-height:1.45;
+  }
+  #view-list li.item.done .item-title {
+    color:var(--done); text-decoration:line-through; text-decoration-thickness:1px;
+  }
+  #view-list li.item.done .item-note,
+  #view-list li.item.done .item-meta { opacity:.55; }
+  #view-list .list-actions { display:flex; gap:4px; align-items:center; }
+  #view-list .list-icon-btn {
+    background:transparent; border:0; cursor:pointer; padding:6px;
+    color:var(--ink-soft); border-radius:6px;
+    transition:all .15s ease;
+  }
+  #view-list .list-icon-btn:hover { color:var(--ink); background:var(--paper-2); }
+  #view-list .list-icon-btn.danger:hover { color:var(--list-accent); }
+  #view-list .edit-form {
+    grid-column:1 / -1; margin-top:8px;
+    display:grid; gap:8px;
+    grid-template-columns: 1fr 100px 140px;
+  }
+  @media (max-width:640px) { #view-list .edit-form { grid-template-columns:1fr 1fr; } }
+  #view-list .edit-form textarea { grid-column:1 / -1; }
+  #view-list .edit-actions { grid-column:1 / -1; display:flex; gap:8px; justify-content:flex-end; }
+  #view-list .ghost-btn {
+    background:transparent; border:1px solid var(--rule);
+    color:var(--ink); padding:8px 14px; border-radius:8px;
+    font-family:"JetBrains Mono", monospace; font-size:11px;
+    letter-spacing:.16em; text-transform:uppercase; cursor:pointer;
+  }
+  #view-list .ghost-btn:hover { border-color:var(--ink); }
+  #view-list .ghost-btn.primary { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  #view-list .list-empty {
+    text-align:center; padding:40px 20px; color:var(--ink-soft);
+    font-style:italic; font-size:18px;
+  }
+  #view-list .footer-note {
+    text-align:center; margin-top:24px; color:var(--ink-soft);
+    font-size:12px; font-family:"JetBrains Mono", monospace;
+    letter-spacing:.14em; text-transform:uppercase;
+  }
+  #view-list .footer-note .clear {
+    background:transparent; border:0; color:var(--ink-soft);
+    text-decoration:underline; cursor:pointer; font:inherit;
+    letter-spacing:inherit; text-transform:inherit;
+  }
+  #view-list .footer-note .clear:hover { color:var(--list-accent); }
+
+  /* Toast */
+  .toast {
+    position:fixed; bottom: calc(80px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
+    font-family:"JetBrains Mono", monospace; font-size:11px;
+    letter-spacing:.14em; text-transform:uppercase;
+    background: var(--text); color: var(--bg);
+    padding:8px 14px; border-radius:999px;
+    opacity:0; transition:opacity .3s ease;
+    pointer-events:none; z-index: 200;
+  }
+  .toast.show { opacity: 1; }
+
+  /* Sign-in gate */
+  .gate {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 300; padding: 20px;
+  }
+  .gate.hidden { display: none; }
+  .gate-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    max-width: 380px; width: 100%;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+    text-align: center;
+  }
+  .gate-card h1 {
+    font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  .gate-card p {
+    font-size: 14px; color: var(--text-muted); margin: 0 0 20px;
+  }
+  .gate-card .gate-err {
+    font-size: 13px; color: var(--danger); margin-top: 12px; min-height: 1.4em;
+  }
+  .gsi-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff; color: #18181b;
+    border: 1px solid #d4d4d8;
+    padding: 10px 16px; border-radius: 8px;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: inherit;
+  }
+  .gsi-btn:hover { background: #f4f4f5; }
+  .gsi-btn svg { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+
+<!-- Sign-in gate -->
+<div class="gate" id="signInGate">
+  <div class="gate-card">
+    <h1>Our Week</h1>
+    <p>Sign in to access your shared planner and list.</p>
+    <button class="gsi-btn" id="googleSignInBtn">
+      <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.02-3.7H.96v2.32A9 9 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.98 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.3-1.72V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3.02-2.32z"/>
+        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.46 3.44 1.35l2.58-2.58A9 9 0 0 0 9 0 9 9 0 0 0 .96 4.96L3.98 7.28C4.68 5.16 6.66 3.58 9 3.58z"/>
+      </svg>
+      Sign in with Google
+    </button>
+    <div class="gate-err" id="gateErr"></div>
+  </div>
+</div>
+
+<div class="app">
+  <header class="app-header">
+    <div class="title">
+      <span class="sync-dot" id="syncDot" title="Local only"></span>
+      Our Week
+    </div>
+    <div class="header-right">
+      <span class="user-chip" id="userChip" style="display:none;"></span>
+      <button class="icon-btn" id="openSettings" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- WISHLIST VIEW -->
+  <section class="view active" id="view-wishlist">
+    <div class="input-row">
+      <input type="text" id="wishlistInput" placeholder="Add an idea… (dinner out, movie night, hike)" autocomplete="off" />
+      <button class="btn" id="addWishlist">Add</button>
+    </div>
+    <div class="section-label">Ideas</div>
+    <ul class="wishlist" id="wishlistList"></ul>
+    <div class="empty" id="wishlistEmpty" style="display:none;">Nothing on the wishlist yet. Add an idea above.</div>
+
+    <div class="section-label" id="scheduledLabel" style="display:none;">Already scheduled</div>
+    <ul class="wishlist" id="scheduledList"></ul>
+  </section>
+
+  <!-- PLAN VIEW -->
+  <section class="view" id="view-plan">
+    <div class="week-nav">
+      <button class="icon-btn" id="prevWeek" title="Previous week">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="week-label" id="weekLabel">This week</div>
+      <div class="week-nav-btns">
+        <button class="icon-btn" id="thisWeekBtn" title="This week">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/></svg>
+        </button>
+        <button class="icon-btn" id="nextWeek" title="Next week">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="planner-hint">Tap a day to add an item, or use <em>Schedule</em> on a wishlist idea. Click a time chip to set or change the time.</p>
+    <div id="dayBlocks"></div>
+  </section>
+
+  <!-- PUBLISHED VIEW -->
+  <section class="view" id="view-pub">
+    <div class="week-nav">
+      <button class="icon-btn" id="pubPrevWeek" title="Previous week">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="week-label" id="pubWeekLabel">This week</div>
+      <div class="week-nav-btns">
+        <button class="icon-btn" id="pubThisWeekBtn" title="This week">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/></svg>
+        </button>
+        <button class="icon-btn" id="pubNextWeek" title="Next week">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="pub-toolbar">
+      <button class="btn ghost" id="exportIcsBtn" title="Download this week as a calendar file">
+        Export .ics
+      </button>
+    </div>
+    <div id="pubDays"></div>
+  </section>
+
+  <!-- LIST VIEW (Our List) -->
+  <section class="view" id="view-list">
+    <div class="list-header">
+      <div class="brand">Our <em>List</em></div>
+      <div class="sub" id="listSub">ready</div>
+    </div>
+    <div class="rule"></div>
+
+    <form class="add" id="addListForm" autocomplete="off">
+      <div class="row">
+        <div class="field" style="grid-column:1 / -1">
+          <label>Item</label>
+          <input id="listTitle" placeholder="What do we need?" required maxlength="200"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Qty</label>
+          <input id="listQty" placeholder="1" maxlength="20"/>
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <select id="listCategory">
+            <option>Groceries</option>
+            <option>Household</option>
+            <option>Pharmacy</option>
+            <option>Gifts</option>
+            <option>Home</option>
+            <option>Clothing</option>
+            <option>Tech</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1 / -1">
+          <label>Note</label>
+          <textarea id="listNote" placeholder="optional — brand, store, anything to remember" rows="1" maxlength="500"></textarea>
+        </div>
+        <button class="add-btn" type="submit">Add</button>
+      </div>
+    </form>
+
+    <div class="chips" id="listChips"></div>
+
+    <div class="section-head">
+      <h2 id="todoHeader">To get</h2>
+    </div>
+    <ul class="list" id="todoList"></ul>
+
+    <div class="section-head" id="doneHead" style="display:none">
+      <h2>Got it</h2>
+    </div>
+    <ul class="list" id="doneList"></ul>
+
+    <div class="footer-note" id="footerNote" style="display:none">
+      <button class="clear" id="clearDone">Clear completed</button>
+    </div>
+  </section>
+
+  <!-- SETTINGS VIEW -->
+  <section class="view" id="view-settings">
+    <div class="settings-section">
+      <h3>Account</h3>
+      <p id="accountInfo">Not signed in.</p>
+      <button class="btn ghost" id="signOutBtn">Sign out</button>
+    </div>
+    <div class="settings-section">
+      <h3>Sync</h3>
+      <p>Real-time sync runs automatically once you're signed in. The dot in the header shows status.</p>
+      <div class="status-msg" id="syncStatus"></div>
+    </div>
+    <div class="settings-section">
+      <h3>Data</h3>
+      <p>Export everything (planner + list) as a JSON file.</p>
+      <div style="display:flex; gap:8px; flex-wrap: wrap;">
+        <button class="btn ghost" id="exportBtn">Export data</button>
+      </div>
+    </div>
+    <div class="settings-section">
+      <h3>About</h3>
+      <p>Our Week — a simple shared planner and list. Built for two.</p>
+    </div>
+  </section>
+</div>
+
+<!-- Schedule modal -->
+<div class="modal-backdrop" id="scheduleModal">
+  <div class="modal">
+    <h3 id="modalTitle">Schedule for…</h3>
+    <div class="field-row">
+      <label for="modalTime">Time (optional)</label>
+      <input type="time" id="modalTime" />
+      <button class="small-btn" id="modalTimeClear" type="button">Clear</button>
+    </div>
+    <div class="day-buttons" id="modalDays"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="modalCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add-to-day modal -->
+<div class="modal-backdrop" id="addDayModal">
+  <div class="modal">
+    <h3 id="addDayTitle">Add to day</h3>
+    <input type="text" id="addDayInput" placeholder="What's happening?" style="margin-bottom:12px;" />
+    <div class="field-row">
+      <label for="addDayTime">Time (optional)</label>
+      <input type="time" id="addDayTime" />
+      <button class="small-btn" id="addDayTimeClear" type="button">Clear</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="addDayCancel">Cancel</button>
+      <button class="btn" id="addDayConfirm">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Time-edit modal (for existing scheduled items) -->
+<div class="modal-backdrop" id="timeEditModal">
+  <div class="modal">
+    <h3 id="timeEditTitle">Set time</h3>
+    <div class="field-row">
+      <label for="timeEditInput">Time</label>
+      <input type="time" id="timeEditInput" />
+      <button class="small-btn" id="timeEditClear" type="button">Clear</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="timeEditCancel">Cancel</button>
+      <button class="btn" id="timeEditConfirm">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">saved</div>
+
+<nav class="tabs">
+  <button class="tab active" data-view="wishlist">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    Wishlist
+  </button>
+  <button class="tab" data-view="plan">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Plan
+  </button>
+  <button class="tab" data-view="pub">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+    This Week
+  </button>
+  <button class="tab" data-view="list">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    List
+  </button>
+</nav>
+
+<script type="module">
+  /* ============================================================
+     OUR WEEK + OUR LIST — merged, signed-in, Firebase-backed
+     ============================================================ */
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getDatabase, ref, onValue, set, update, push, remove, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // ---- Firebase config (your existing project) ----
+  const firebaseConfig = {
+    apiKey: "AIzaSyBiPZFbkyoXzkLVTZK0d90rbm34fjMsOVU",
+    authDomain: "our-week-a1e41.firebaseapp.com",
+    databaseURL: "https://our-week-a1e41-default-rtdb.firebaseio.com/",
+    projectId: "our-week-a1e41",
+    storageBucket: "our-week-a1e41.firebasestorage.app",
+    messagingSenderId: "869005838010",
+    appId: "1:869005838010:web:5fb2ded53f537581cba483"
+  };
+
+  // ---- Allowlist (kept here for nicer UX; the real gate is server-side rules) ----
+  const ALLOWED_EMAILS = [
+    "wegnerdevin@gmail.com",
+    "webbjess15@gmail.com"
+  ];
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getDatabase(app);
+
+  // ---- Common helpers ----
+  const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  const DAYS_LONG = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+  function mondayOf(d) {
+    const date = new Date(d);
+    date.setHours(0,0,0,0);
+    const day = date.getDay();
+    const diff = (day === 0 ? -6 : 1 - day);
+    date.setDate(date.getDate() + diff);
+    return date;
+  }
+  function weekKey(d) {
+    const m = mondayOf(d);
+    return `${m.getFullYear()}-${String(m.getMonth()+1).padStart(2,"0")}-${String(m.getDate()).padStart(2,"0")}`;
+  }
+  function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+  function fmtDay(d) { return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }); }
+  function fmtWeekRange(s) {
+    const e = addDays(s, 6);
+    if (s.getMonth() === e.getMonth()) {
+      return `${s.toLocaleDateString(undefined,{month:"short",day:"numeric"})} – ${e.getDate()}`;
+    }
+    return `${s.toLocaleDateString(undefined,{month:"short",day:"numeric"})} – ${e.toLocaleDateString(undefined,{month:"short",day:"numeric"})}`;
+  }
+  function sameDay(a,b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+  function fmtTime(hhmm) {
+    if (!hhmm || !/^\d{1,2}:\d{2}$/.test(hhmm)) return "";
+    const [h, m] = hhmm.split(":").map(Number);
+    const d = new Date(); d.setHours(h, m, 0, 0);
+    return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  }
+  function timeSortKey(t) {
+    if (!t || !/^\d{1,2}:\d{2}$/.test(t)) return 99 * 60;
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  }
+  function escapeAttr(s) { return escapeHtml(s); }
+
+  // ============================================================
+  // STATE
+  // ============================================================
+  let state = {
+    wishlist: {},
+    schedule: {},
+  };
+  let listItems = {};
+  let viewWeekStart = mondayOf(new Date());
+  let pubWeekStart  = mondayOf(new Date());
+  let activeListCat = "All";
+  let editingListId = null;
+  let unsubPlanner = null;
+  let unsubList = null;
+  let suppressNextPush = false;
+  let currentUser = null;
+
+  // ============================================================
+  // AUTH GATE
+  // ============================================================
+  const gateEl = document.getElementById("signInGate");
+  const gateErr = document.getElementById("gateErr");
+  const userChip = document.getElementById("userChip");
+  const accountInfo = document.getElementById("accountInfo");
+
+  function showGate(msg) {
+    gateEl.classList.remove("hidden");
+    gateErr.textContent = msg || "";
+  }
+  function hideGate() { gateEl.classList.add("hidden"); gateErr.textContent = ""; }
+
+  document.getElementById("googleSignInBtn").onclick = async () => {
+    gateErr.textContent = "";
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (e) {
+      gateErr.textContent = e.message || "Sign-in failed.";
+    }
+  };
+
+  document.getElementById("signOutBtn").onclick = async () => {
+    await signOut(auth);
+  };
+
+  onAuthStateChanged(auth, async (user) => {
+    if (unsubPlanner) { unsubPlanner(); unsubPlanner = null; }
+    if (unsubList)    { unsubList();    unsubList = null; }
+
+    if (!user) {
+      currentUser = null;
+      userChip.style.display = "none";
+      accountInfo.textContent = "Not signed in.";
+      setSyncDot("local", "Not signed in.");
+      state.wishlist = {}; state.schedule = {}; listItems = {};
+      renderAll();
+      showGate();
+      return;
+    }
+
+    const email = (user.email || "").toLowerCase();
+    if (!ALLOWED_EMAILS.includes(email)) {
+      // Not on the allowlist — sign them right back out and explain.
+      await signOut(auth);
+      showGate(`Sorry, ${email} isn't authorized. Ask Devin to add you.`);
+      return;
+    }
+
+    currentUser = user;
+    userChip.textContent = user.email;
+    userChip.style.display = "inline-block";
+    accountInfo.textContent = `Signed in as ${user.email}.`;
+    hideGate();
+    attachListeners();
+  });
+
+  // ============================================================
+  // FIREBASE LISTENERS
+  // ============================================================
+  function attachListeners() {
+    const plannerRef = ref(db, "ourweek");
+    const listRef    = ref(db, "ourList/items");
+
+    setSyncDot("local", "Connecting…");
+
+    unsubPlanner = onValue(plannerRef, (snap) => {
+      const v = snap.val();
+      suppressNextPush = true;
+      state.wishlist = (v && v.wishlist) ? v.wishlist : {};
+      state.schedule = (v && v.schedule) ? v.schedule : {};
+      renderWishlist(); renderPlan(); renderPub();
+      setSyncDot("live", "Synced.");
+    }, (err) => {
+      console.warn("planner read error:", err);
+      setSyncDot("error", "Read failed: " + err.message);
+    });
+
+    unsubList = onValue(listRef, (snap) => {
+      listItems = snap.val() || {};
+      renderList();
+    }, (err) => {
+      console.warn("list read error:", err);
+      setSyncDot("error", "List read failed: " + err.message);
+    });
+  }
+
+  // Targeted writes — much safer with strict rules. Each helper writes only
+  // the path it touched, so old/loose data elsewhere can't poison new writes.
+  async function writePath(path, value) {
+    if (!currentUser) return;
+    try {
+      if (value === null) {
+        await remove(ref(db, path));
+      } else {
+        await set(ref(db, path), value);
+      }
+    } catch (e) {
+      console.warn("write failed:", path, e);
+      setSyncDot("error", e.message);
+    }
+  }
+  async function updateMulti(updates) {
+    if (!currentUser) return;
+    try {
+      await update(ref(db), updates);
+    } catch (e) {
+      console.warn("multi-update failed:", e);
+      setSyncDot("error", e.message);
+    }
+  }
+  // Strip null/undefined fields so we never send literal null to a validated path.
+  function clean(obj) {
+    const out = {};
+    for (const k of Object.keys(obj)) {
+      const v = obj[k];
+      if (v === null || v === undefined) continue;
+      out[k] = v;
+    }
+    return out;
+  }
+
+  // ============================================================
+  // SYNC DOT
+  // ============================================================
+  function setSyncDot(mode, msg) {
+    const dot = document.getElementById("syncDot");
+    const status = document.getElementById("syncStatus");
+    dot.classList.remove("live","error");
+    if (mode === "live") { dot.classList.add("live"); dot.title = "Synced"; }
+    else if (mode === "error") { dot.classList.add("error"); dot.title = "Sync error"; }
+    else { dot.title = "Local only"; }
+    if (msg && status) {
+      status.textContent = msg;
+      status.className = "status-msg " + (mode === "live" ? "ok" : mode === "error" ? "err" : "");
+    }
+  }
+
+  // ============================================================
+  // WISHLIST
+  // ============================================================
+  function renderWishlist() {
+    const ul = document.getElementById("wishlistList");
+    const sUl = document.getElementById("scheduledList");
+    const empty = document.getElementById("wishlistEmpty");
+    const sLabel = document.getElementById("scheduledLabel");
+    ul.innerHTML = ""; sUl.innerHTML = "";
+
+    const items = Object.entries(state.wishlist || {})
+      .map(([id,v]) => ({ id, ...v }))
+      .sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+    const ideas = items.filter(i => i.status !== "scheduled");
+    const scheduled = items.filter(i => i.status === "scheduled");
+
+    empty.style.display = ideas.length === 0 ? "block" : "none";
+    sLabel.style.display = scheduled.length === 0 ? "none" : "block";
+
+    for (const it of ideas) ul.appendChild(wishItemEl(it, false));
+    for (const it of scheduled) sUl.appendChild(wishItemEl(it, true));
+  }
+
+  function wishItemEl(it, scheduled) {
+    const li = document.createElement("li");
+    li.className = "wishlist-item" + (scheduled ? " scheduled" : "");
+    li.innerHTML = `
+      <span class="text"></span>
+      <div class="actions">
+        ${scheduled ? "" : `<button class="small-btn" data-act="schedule">Schedule</button>`}
+        <button class="small-btn" data-act="edit">Edit</button>
+        <button class="small-btn" data-act="delete">Delete</button>
+      </div>`;
+    li.querySelector(".text").textContent = it.text;
+    li.querySelector('[data-act="edit"]').onclick = () => editWishlist(it.id);
+    li.querySelector('[data-act="delete"]').onclick = () => deleteWishlist(it.id);
+    if (!scheduled) {
+      li.querySelector('[data-act="schedule"]').onclick = () => openScheduleModal(it.id);
+    }
+    return li;
+  }
+
+  function addWishlist(text) {
+    const t = (text || "").trim();
+    if (!t) return;
+    const id = uid();
+    const item = { text: t, createdAt: Date.now(), status: "idea" };
+    state.wishlist = state.wishlist || {};
+    state.wishlist[id] = item;
+    writePath(`ourweek/wishlist/${id}`, item);
+    renderWishlist();
+  }
+  function editWishlist(id) {
+    const cur = state.wishlist[id];
+    if (!cur) return;
+    const next = prompt("Edit:", cur.text);
+    if (next === null) return;
+    const t = next.trim();
+    if (!t) return;
+    state.wishlist[id].text = t;
+    const updates = { [`ourweek/wishlist/${id}/text`]: t };
+    for (const wk of Object.keys(state.schedule || {})) {
+      for (let d=0; d<7; d++) {
+        const day = state.schedule[wk]?.[d];
+        if (!day) continue;
+        for (const sid of Object.keys(day)) {
+          if (day[sid].sourceId === id) {
+            day[sid].text = t;
+            updates[`ourweek/schedule/${wk}/${d}/${sid}/text`] = t;
+          }
+        }
+      }
+    }
+    updateMulti(updates);
+    renderAll();
+  }
+  function deleteWishlist(id) {
+    if (!confirm("Delete this idea?")) return;
+    delete state.wishlist[id];
+    writePath(`ourweek/wishlist/${id}`, null);
+    renderWishlist();
+  }
+
+  // ============================================================
+  // SCHEDULE MODAL
+  // ============================================================
+  let scheduleSourceId = null;
+  function openScheduleModal(id) {
+    scheduleSourceId = id;
+    const item = state.wishlist[id];
+    document.getElementById("modalTitle").textContent = `Schedule "${item.text}" for…`;
+    document.getElementById("modalTime").value = "";
+    const wrap = document.getElementById("modalDays");
+    wrap.innerHTML = "";
+    for (let d=0; d<7; d++) {
+      const date = addDays(viewWeekStart, d);
+      const btn = document.createElement("button");
+      btn.innerHTML = `<div style="font-weight:600">${DAYS_LONG[d]}</div><div style="color:var(--text-muted); font-size:12px;">${fmtDay(date)}</div>`;
+      btn.onclick = () => {
+        const time = document.getElementById("modalTime").value || null;
+        scheduleItemOnDay(id, viewWeekStart, d, time);
+        closeScheduleModal();
+      };
+      wrap.appendChild(btn);
+    }
+    document.getElementById("scheduleModal").classList.add("open");
+  }
+  function closeScheduleModal() {
+    document.getElementById("scheduleModal").classList.remove("open");
+    scheduleSourceId = null;
+  }
+  function scheduleItemOnDay(sourceId, weekMon, dayIdx, time) {
+    const wk = weekKey(weekMon);
+    state.schedule[wk] = state.schedule[wk] || {};
+    state.schedule[wk][dayIdx] = state.schedule[wk][dayIdx] || {};
+    const sid = uid();
+    const entry = clean({
+      text: state.wishlist[sourceId].text,
+      completed: false,
+      sourceId,
+      time: time || undefined,
+    });
+    state.schedule[wk][dayIdx][sid] = entry;
+    state.wishlist[sourceId].status = "scheduled";
+    viewWeekStart = mondayOf(weekMon);
+    updateMulti({
+      [`ourweek/schedule/${wk}/${dayIdx}/${sid}`]: entry,
+      [`ourweek/wishlist/${sourceId}/status`]: "scheduled",
+    });
+    renderAll();
+    switchView("plan");
+  }
+
+  // ============================================================
+  // ADD-TO-DAY MODAL
+  // ============================================================
+  let addDayTarget = null;
+  function openAddDayModal(weekMon, dayIdx) {
+    addDayTarget = { weekMon, dayIdx };
+    const date = addDays(weekMon, dayIdx);
+    document.getElementById("addDayTitle").textContent = `Add to ${DAYS_LONG[dayIdx]}, ${fmtDay(date)}`;
+    const inp = document.getElementById("addDayInput");
+    const timeInp = document.getElementById("addDayTime");
+    inp.value = ""; timeInp.value = "";
+    document.getElementById("addDayModal").classList.add("open");
+    setTimeout(() => inp.focus(), 60);
+  }
+  function closeAddDayModal() {
+    document.getElementById("addDayModal").classList.remove("open");
+    addDayTarget = null;
+  }
+  function confirmAddDay() {
+    const inp = document.getElementById("addDayInput");
+    const timeInp = document.getElementById("addDayTime");
+    const text = inp.value.trim();
+    if (!text || !addDayTarget) { closeAddDayModal(); return; }
+    const { weekMon, dayIdx } = addDayTarget;
+    const wk = weekKey(weekMon);
+    state.schedule[wk] = state.schedule[wk] || {};
+    state.schedule[wk][dayIdx] = state.schedule[wk][dayIdx] || {};
+    const sid = uid();
+    const entry = clean({
+      text,
+      completed: false,
+      time: timeInp.value || undefined,
+    });
+    state.schedule[wk][dayIdx][sid] = entry;
+    writePath(`ourweek/schedule/${wk}/${dayIdx}/${sid}`, entry);
+    renderPlan();
+    closeAddDayModal();
+  }
+
+  // ============================================================
+  // TIME EDIT MODAL
+  // ============================================================
+  let timeEditTarget = null;
+  function openTimeEditModal(weekMon, dayIdx, sid) {
+    const wk = weekKey(weekMon);
+    const item = state.schedule[wk]?.[dayIdx]?.[sid];
+    if (!item) return;
+    timeEditTarget = { weekMon, dayIdx, sid };
+    document.getElementById("timeEditTitle").textContent = `Set time — ${item.text}`;
+    document.getElementById("timeEditInput").value = item.time || "";
+    document.getElementById("timeEditModal").classList.add("open");
+    setTimeout(() => document.getElementById("timeEditInput").focus(), 60);
+  }
+  function closeTimeEditModal() {
+    document.getElementById("timeEditModal").classList.remove("open");
+    timeEditTarget = null;
+  }
+  function confirmTimeEdit() {
+    if (!timeEditTarget) { closeTimeEditModal(); return; }
+    const { weekMon, dayIdx, sid } = timeEditTarget;
+    const wk = weekKey(weekMon);
+    if (state.schedule[wk]?.[dayIdx]?.[sid]) {
+      const v = document.getElementById("timeEditInput").value;
+      const newTime = v || null;
+      state.schedule[wk][dayIdx][sid].time = newTime;
+      // Setting to null deletes the field, which the rule allows.
+      writePath(`ourweek/schedule/${wk}/${dayIdx}/${sid}/time`, newTime);
+      renderPlan();
+    }
+    closeTimeEditModal();
+  }
+
+  // ============================================================
+  // PLAN VIEW
+  // ============================================================
+  function renderPlan() {
+    document.getElementById("weekLabel").textContent = labelForWeek(viewWeekStart);
+    const wrap = document.getElementById("dayBlocks");
+    wrap.innerHTML = "";
+    const wk = weekKey(viewWeekStart);
+    const today = new Date();
+    for (let d=0; d<7; d++) {
+      const date = addDays(viewWeekStart, d);
+      const block = document.createElement("div");
+      block.className = "day-block" + (sameDay(date, today) ? " today" : "");
+      const items = state.schedule[wk]?.[d] || {};
+      const sortedEntries = Object.entries(items).sort((a,b) => timeSortKey(a[1].time) - timeSortKey(b[1].time));
+      const itemsHtml = sortedEntries.map(([sid, it]) => {
+        const safe = escapeHtml(it.text);
+        const timeLabel = it.time ? escapeHtml(fmtTime(it.time)) : "+ time";
+        const chipClass = it.time ? "time-chip" : "time-chip empty";
+        return `<li>
+          <input type="checkbox" data-sid="${sid}" data-day="${d}" ${it.completed ? "checked" : ""} />
+          <span class="text ${it.completed?"done":""}">${safe}</span>
+          <button class="${chipClass}" data-action="edit-time" data-sid="${sid}" data-day="${d}">${timeLabel}</button>
+          <button class="small-btn" data-action="remove" data-sid="${sid}" data-day="${d}">×</button>
+        </li>`;
+      }).join("");
+      block.innerHTML = `
+        <div class="day-header">
+          <div class="day-name">${DAYS_LONG[d]}</div>
+          <div class="day-date">${fmtDay(date)}</div>
+        </div>
+        <ul class="day-items">${itemsHtml}</ul>
+        <button class="day-add" data-day="${d}">+ Add to ${DAYS[d]}</button>
+      `;
+      block.querySelector(".day-add").onclick = () => openAddDayModal(viewWeekStart, d);
+      block.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.onchange = () => toggleScheduledItem(viewWeekStart, +cb.dataset.day, cb.dataset.sid, cb.checked);
+      });
+      block.querySelectorAll('[data-action="remove"]').forEach(btn => {
+        btn.onclick = () => removeScheduledItem(viewWeekStart, +btn.dataset.day, btn.dataset.sid);
+      });
+      block.querySelectorAll('[data-action="edit-time"]').forEach(btn => {
+        btn.onclick = () => openTimeEditModal(viewWeekStart, +btn.dataset.day, btn.dataset.sid);
+      });
+      wrap.appendChild(block);
+    }
+  }
+  function toggleScheduledItem(weekMon, dayIdx, sid, val) {
+    const wk = weekKey(weekMon);
+    if (state.schedule[wk]?.[dayIdx]?.[sid]) {
+      state.schedule[wk][dayIdx][sid].completed = val;
+      writePath(`ourweek/schedule/${wk}/${dayIdx}/${sid}/completed`, val);
+      renderPlan();
+    }
+  }
+  function removeScheduledItem(weekMon, dayIdx, sid) {
+    const wk = weekKey(weekMon);
+    const item = state.schedule[wk]?.[dayIdx]?.[sid];
+    if (!item) return;
+    delete state.schedule[wk][dayIdx][sid];
+    const updates = { [`ourweek/schedule/${wk}/${dayIdx}/${sid}`]: null };
+    if (item.sourceId && state.wishlist[item.sourceId]) {
+      const stillScheduled = anyStillScheduled(item.sourceId);
+      if (!stillScheduled) {
+        state.wishlist[item.sourceId].status = "idea";
+        updates[`ourweek/wishlist/${item.sourceId}/status`] = "idea";
+      }
+    }
+    updateMulti(updates);
+    renderAll();
+  }
+  function anyStillScheduled(sourceId) {
+    for (const wk of Object.keys(state.schedule || {})) {
+      for (let d=0; d<7; d++) {
+        const day = state.schedule[wk]?.[d];
+        if (!day) continue;
+        for (const sid of Object.keys(day)) {
+          if (day[sid].sourceId === sourceId) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  // ============================================================
+  // PUBLISHED VIEW + ICS
+  // ============================================================
+  function renderPub() {
+    document.getElementById("pubWeekLabel").textContent = labelForWeek(pubWeekStart);
+    const wrap = document.getElementById("pubDays");
+    wrap.innerHTML = "";
+    const wk = weekKey(pubWeekStart);
+    const today = new Date();
+    for (let d=0; d<7; d++) {
+      const date = addDays(pubWeekStart, d);
+      const isToday = sameDay(date, today);
+      const items = state.schedule[wk]?.[d] || {};
+      const sortedItems = Object.values(items).sort((a,b) => timeSortKey(a.time) - timeSortKey(b.time));
+      const itemsHtml = sortedItems.length
+        ? `<ul class="pub-day-items">${sortedItems.map(it => {
+            const leading = it.time
+              ? `<span class="pub-time">${escapeHtml(fmtTime(it.time))}</span>`
+              : `<span class="dot"></span>`;
+            return `<li class="${it.completed?"done":""}">${leading}<span class="text">${escapeHtml(it.text)}</span></li>`;
+          }).join("")}</ul>`
+        : `<div class="pub-day-empty">Nothing planned</div>`;
+      const block = document.createElement("div");
+      block.className = "pub-day" + (isToday ? " today" : "");
+      block.innerHTML = `
+        <div class="pub-day-header">
+          <div class="pub-day-name">${DAYS_LONG[d]}${isToday ? " · today" : ""}</div>
+          <div class="pub-day-date">${fmtDay(date)}</div>
+        </div>
+        ${itemsHtml}
+      `;
+      wrap.appendChild(block);
+    }
+  }
+  function labelForWeek(mon) {
+    const thisMon = mondayOf(new Date());
+    if (sameDay(mon, thisMon)) return `This week · ${fmtWeekRange(mon)}`;
+    const next = addDays(thisMon, 7);
+    if (sameDay(mon, next)) return `Next week · ${fmtWeekRange(mon)}`;
+    const prev = addDays(thisMon, -7);
+    if (sameDay(mon, prev)) return `Last week · ${fmtWeekRange(mon)}`;
+    return fmtWeekRange(mon);
+  }
+
+  function pad2(n) { return String(n).padStart(2, "0"); }
+  function icsDate(d) { return `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}`; }
+  function icsDateTimeLocal(d) { return `${icsDate(d)}T${pad2(d.getHours())}${pad2(d.getMinutes())}00`; }
+  function icsDateTimeUtc(d) {
+    return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`;
+  }
+  function foldLine(line) {
+    if (line.length <= 75) return line;
+    const out = []; let i = 0;
+    out.push(line.slice(i, i + 75)); i += 75;
+    while (i < line.length) { out.push(" " + line.slice(i, i + 74)); i += 74; }
+    return out.join("\r\n");
+  }
+  function icsEscape(s) {
+    return String(s).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  }
+  function buildIcs(weekMon) {
+    const wk = weekKey(weekMon);
+    const dtstamp = icsDateTimeUtc(new Date());
+    const lines = [
+      "BEGIN:VCALENDAR","VERSION:2.0",
+      "PRODID:-//Our Week//Couples Planner//EN",
+      "CALSCALE:GREGORIAN","METHOD:PUBLISH",
+      `X-WR-CALNAME:Our Week ${fmtWeekRange(weekMon)}`,
+    ];
+    let count = 0;
+    for (let d = 0; d < 7; d++) {
+      const date = addDays(weekMon, d);
+      const items = state.schedule[wk]?.[d] || {};
+      for (const [sid, it] of Object.entries(items)) {
+        count++;
+        const uidStr = `${wk}-${d}-${sid}@ourweek`;
+        const summary = icsEscape(it.text || "(untitled)");
+        lines.push("BEGIN:VEVENT");
+        lines.push(foldLine(`UID:${uidStr}`));
+        lines.push(`DTSTAMP:${dtstamp}`);
+        lines.push(foldLine(`SUMMARY:${summary}`));
+        if (it.time && /^\d{1,2}:\d{2}$/.test(it.time)) {
+          const [h, m] = it.time.split(":").map(Number);
+          const start = new Date(date); start.setHours(h, m, 0, 0);
+          const end = new Date(start); end.setHours(start.getHours() + 1);
+          lines.push(`DTSTART:${icsDateTimeLocal(start)}`);
+          lines.push(`DTEND:${icsDateTimeLocal(end)}`);
+        } else {
+          const nextDay = addDays(date, 1);
+          lines.push(`DTSTART;VALUE=DATE:${icsDate(date)}`);
+          lines.push(`DTEND;VALUE=DATE:${icsDate(nextDay)}`);
+        }
+        lines.push("END:VEVENT");
+      }
+    }
+    lines.push("END:VCALENDAR");
+    return { ics: lines.join("\r\n"), count };
+  }
+  function downloadIcsForWeek(weekMon) {
+    const { ics, count } = buildIcs(weekMon);
+    if (count === 0) { alert("Nothing scheduled for this week yet."); return; }
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `our-week-${weekKey(weekMon)}.ics`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+  }
+
+  // ============================================================
+  // OUR LIST
+  // ============================================================
+  const listSub = document.getElementById("listSub");
+  function flashList(msg) {
+    listSub.textContent = msg;
+    clearTimeout(flashList._t);
+    flashList._t = setTimeout(() => { listSub.textContent = "ready"; }, 1100);
+  }
+
+  function renderList() {
+    const all = Object.entries(listItems).map(([id,v]) => ({ id, ...v }));
+    const counts = { All: 0 };
+    for (const it of all) {
+      if (it.done) continue;
+      counts.All++;
+      counts[it.category] = (counts[it.category] || 0) + 1;
+    }
+    const cats = ["All", ...Object.keys(counts).filter(c => c !== "All").sort()];
+    const chipsEl = document.getElementById("listChips");
+    chipsEl.innerHTML = cats.map(c => `
+      <button class="chip ${c===activeListCat?'active':''}" data-cat="${escapeAttr(c)}">
+        ${escapeHtml(c)}<span class="count">${counts[c]||0}</span>
+      </button>
+    `).join("");
+    chipsEl.querySelectorAll(".chip").forEach(b => {
+      b.onclick = () => { activeListCat = b.dataset.cat; renderList(); };
+    });
+
+    const visible = all.filter(it => activeListCat === "All" || it.category === activeListCat);
+    const todo = visible.filter(it => !it.done).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    const done = visible.filter(it => it.done).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
+
+    const todoListEl = document.getElementById("todoList");
+    const doneListEl = document.getElementById("doneList");
+    todoListEl.innerHTML = todo.length
+      ? todo.map(renderListItem).join("")
+      : `<div class="list-empty">${activeListCat === "All" ? "Nothing on the list. ✶" : "Nothing in " + escapeHtml(activeListCat) + "."}</div>`;
+    doneListEl.innerHTML = done.map(renderListItem).join("");
+    document.getElementById("doneHead").style.display = done.length ? "flex" : "none";
+    document.getElementById("footerNote").style.display = done.length ? "block" : "none";
+    bindListItemEvents();
+  }
+
+  function renderListItem(it) {
+    if (editingListId === it.id) return renderListEdit(it);
+    const meta = [];
+    if (it.qty) meta.push(`<span>×${escapeHtml(it.qty)}</span>`);
+    if (it.category) meta.push(`<span class="cat">${escapeHtml(it.category)}</span>`);
+    return `
+      <li class="item ${it.done ? 'done':''}" data-id="${it.id}">
+        <input class="check" type="checkbox" ${it.done?'checked':''} aria-label="Mark done"/>
+        <div class="item-body">
+          <div class="item-title">${escapeHtml(it.title || '')}</div>
+          ${meta.length ? `<div class="item-meta">${meta.join('')}</div>`:''}
+          ${it.note ? `<div class="item-note">${escapeHtml(it.note)}</div>`:''}
+        </div>
+        <div class="list-actions">
+          <button class="list-icon-btn" data-action="edit" aria-label="Edit">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </button>
+          <button class="list-icon-btn danger" data-action="delete" aria-label="Delete">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </li>
+    `;
+  }
+
+  function renderListEdit(it) {
+    const cats = ["Groceries","Household","Pharmacy","Gifts","Home","Clothing","Tech","Other"];
+    const opts = cats.map(c => `<option ${c===it.category?'selected':''}>${c}</option>`).join("");
+    return `
+      <li class="item" data-id="${it.id}">
+        <input class="check" type="checkbox" ${it.done?'checked':''} aria-label="Mark done"/>
+        <div class="item-body" style="grid-column:2 / -1">
+          <form class="edit-form" data-edit-id="${it.id}">
+            <div class="field" style="grid-column:1 / -1">
+              <label>Item</label>
+              <input name="title" value="${escapeAttr(it.title||'')}" required maxlength="200"/>
+            </div>
+            <div class="field">
+              <label>Qty</label>
+              <input name="qty" value="${escapeAttr(it.qty||'')}" maxlength="20"/>
+            </div>
+            <div class="field">
+              <label>Category</label>
+              <select name="category">${opts}</select>
+            </div>
+            <div class="field" style="grid-column:1 / -1">
+              <label>Note</label>
+              <textarea name="note" rows="2" maxlength="500">${escapeHtml(it.note||'')}</textarea>
+            </div>
+            <div class="edit-actions">
+              <button type="button" class="ghost-btn" data-action="cancel">Cancel</button>
+              <button type="submit" class="ghost-btn primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </li>
+    `;
+  }
+
+  function bindListItemEvents() {
+    document.querySelectorAll("#view-list li.item").forEach(li => {
+      const id = li.dataset.id;
+      const check = li.querySelector(".check");
+      if (check) check.onchange = () => {
+        update(ref(db, `ourList/items/${id}`), {
+          done: check.checked,
+          doneAt: check.checked ? serverTimestamp() : null,
+        });
+        flashList(check.checked ? "got it" : "back on list");
+      };
+      li.querySelectorAll("[data-action]").forEach(btn => {
+        btn.onclick = (e) => {
+          e.preventDefault();
+          const a = btn.dataset.action;
+          if (a === "delete") {
+            if (confirm("Delete this item?")) {
+              remove(ref(db, `ourList/items/${id}`));
+              flashList("deleted");
+            }
+          } else if (a === "edit") {
+            editingListId = id; renderList();
+          } else if (a === "cancel") {
+            editingListId = null; renderList();
+          }
+        };
+      });
+      const form = li.querySelector("form.edit-form");
+      if (form) {
+        form.onsubmit = (e) => {
+          e.preventDefault();
+          const fd = new FormData(form);
+          const patch = {
+            title: (fd.get("title")||"").toString().trim(),
+            qty:   (fd.get("qty")||"").toString().trim(),
+            category: (fd.get("category")||"Other").toString(),
+            note:  (fd.get("note")||"").toString().trim(),
+          };
+          if (!patch.title) return;
+          update(ref(db, `ourList/items/${id}`), patch);
+          editingListId = null;
+          flashList("saved");
+        };
+      }
+    });
+  }
+
+  document.getElementById("addListForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    const title = document.getElementById("listTitle").value.trim();
+    if (!title) return;
+    const qty = document.getElementById("listQty").value.trim();
+    const category = document.getElementById("listCategory").value;
+    const note = document.getElementById("listNote").value.trim();
+    push(ref(db, "ourList/items"), {
+      title, qty, category, note,
+      done: false,
+      createdAt: serverTimestamp(),
+    });
+    const keepCat = category;
+    e.target.reset();
+    document.getElementById("listCategory").value = keepCat;
+    document.getElementById("listTitle").focus();
+    flashList("added");
+  });
+
+  document.getElementById("clearDone").addEventListener("click", () => {
+    const done = Object.entries(listItems).filter(([,v]) => v.done);
+    if (!done.length) return;
+    if (!confirm(`Clear ${done.length} completed item${done.length>1?'s':''}?`)) return;
+    const updates = {};
+    done.forEach(([id]) => { updates[`ourList/items/${id}`] = null; });
+    update(ref(db), updates);
+    flashList("cleared");
+  });
+
+  // ============================================================
+  // VIEW SWITCHING + WIRING
+  // ============================================================
+  function renderAll() { renderWishlist(); renderPlan(); renderPub(); renderList(); }
+
+  function switchView(name) {
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    const el = document.getElementById("view-" + name);
+    if (el) el.classList.add("active");
+    document.querySelectorAll(".tab").forEach(t => {
+      t.classList.toggle("active", t.dataset.view === name);
+    });
+    if (name === "pub") pubWeekStart = mondayOf(new Date());
+    renderAll();
+    window.scrollTo({ top: 0 });
+  }
+
+  function wire() {
+    document.querySelectorAll(".tab").forEach(t => {
+      t.onclick = () => switchView(t.dataset.view);
+    });
+
+    document.getElementById("addWishlist").onclick = () => {
+      const inp = document.getElementById("wishlistInput");
+      addWishlist(inp.value);
+      inp.value = ""; inp.focus();
+    };
+    document.getElementById("wishlistInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") document.getElementById("addWishlist").click();
+    });
+
+    document.getElementById("prevWeek").onclick = () => { viewWeekStart = addDays(viewWeekStart,-7); renderPlan(); };
+    document.getElementById("nextWeek").onclick = () => { viewWeekStart = addDays(viewWeekStart, 7); renderPlan(); };
+    document.getElementById("thisWeekBtn").onclick = () => { viewWeekStart = mondayOf(new Date()); renderPlan(); };
+
+    document.getElementById("pubPrevWeek").onclick = () => { pubWeekStart = addDays(pubWeekStart,-7); renderPub(); };
+    document.getElementById("pubNextWeek").onclick = () => { pubWeekStart = addDays(pubWeekStart, 7); renderPub(); };
+    document.getElementById("pubThisWeekBtn").onclick = () => { pubWeekStart = mondayOf(new Date()); renderPub(); };
+
+    document.getElementById("exportIcsBtn").onclick = () => downloadIcsForWeek(pubWeekStart);
+
+    document.getElementById("modalCancel").onclick = closeScheduleModal;
+    document.getElementById("modalTimeClear").onclick = () => { document.getElementById("modalTime").value = ""; };
+    document.getElementById("scheduleModal").addEventListener("click", e => {
+      if (e.target.id === "scheduleModal") closeScheduleModal();
+    });
+
+    document.getElementById("addDayCancel").onclick = closeAddDayModal;
+    document.getElementById("addDayConfirm").onclick = confirmAddDay;
+    document.getElementById("addDayTimeClear").onclick = () => { document.getElementById("addDayTime").value = ""; };
+    document.getElementById("addDayInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") confirmAddDay();
+    });
+    document.getElementById("addDayModal").addEventListener("click", e => {
+      if (e.target.id === "addDayModal") closeAddDayModal();
+    });
+
+    document.getElementById("timeEditCancel").onclick = closeTimeEditModal;
+    document.getElementById("timeEditConfirm").onclick = confirmTimeEdit;
+    document.getElementById("timeEditClear").onclick = () => { document.getElementById("timeEditInput").value = ""; };
+    document.getElementById("timeEditInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") confirmTimeEdit();
+    });
+    document.getElementById("timeEditModal").addEventListener("click", e => {
+      if (e.target.id === "timeEditModal") closeTimeEditModal();
+    });
+
+    document.getElementById("openSettings").onclick = () => switchView("settings");
+
+    document.getElementById("exportBtn").onclick = () => {
+      const data = JSON.stringify({
+        wishlist: state.wishlist,
+        schedule: state.schedule,
+        list: listItems,
+      }, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "our-week-" + new Date().toISOString().slice(0,10) + ".json";
+      a.click(); URL.revokeObjectURL(url);
+    };
+  }
+
+  // ============================================================
+  // BOOT
+  // ============================================================
+  wire();
+  renderAll();
+  showGate(); // Show until auth resolves; onAuthStateChanged will hide if signed in.
+</script>
+</body>
+</html>
